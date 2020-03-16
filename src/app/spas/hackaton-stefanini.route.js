@@ -1,4 +1,4 @@
-(function(angular){
+(function (angular) {
     "use strict";
 
     angular.module('hackaton-stefanini').config(function ($routeProvider) {
@@ -22,11 +22,23 @@
                 templateUrl: 'app/spas/pessoas/template/pessoa-incluir-alterar.tpl.html',
                 controller: 'PessoaIncluirAlterarController as vm'
             })
-            
+            /** Rotas para Perfis */
+            .when('/listarPerfis', {
+                templateUrl: 'app/spas/perfis/template/perfil-listar.tpl.html',
+                controller: 'PerfilListarController as vm'
+            })
+            // .when('/EditarPerfis/:idPerfil', {
+            //     templateUrl: 'app/spas/perfis/template/perfil-incluir-alterar.tpl.html',
+            //     controller: 'PerfilIncluirAlterarController as vm'
+            // })
+            // .when('/cadastrarPerfil', {
+            //     templateUrl: 'app/spas/perfis/template/perfil-incluir-alterar.tpl.html',
+            //     controller: 'PerfilIncluirAlterarController as vm'
+            // })
+
             .otherwise({
                 templateUrl: 'index_ERROR.html'
             });
     });
 
 }(angular));
-

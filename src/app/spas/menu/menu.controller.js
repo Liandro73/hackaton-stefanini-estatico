@@ -21,10 +21,14 @@ function MenuController($rootScope, $scope, $location,
                 $location.path("listarPessoas");
                 break;
 
+            case 'cadastrarPerfil':
+                $location.path("cadastrarPerfil");
+                break;
+
             case 'EditarPerfis':
                 $location.path("EditarPerfis");
                 break;
-                
+
             case 'listarPerfis':
                 $location.path("listarPerfis");
                 break;
@@ -38,7 +42,7 @@ function MenuController($rootScope, $scope, $location,
                 break;
         }
 
-        //vm.executaConsultaModelo();
+        vm.executaConsultaModelo();
     };
 
     vm.executaConsultaModelo = function () {
