@@ -1,0 +1,93 @@
+<style>
+  .btn-space {
+    margin-right: 10px;
+  }
+
+  myModal {
+    z-index: 2147483647;
+  }
+
+  .disabledDiv {
+    pointer-events: none;
+    opacity: 0.4;
+  }
+</style>
+
+<div ng-init="vm.init()">
+  <div
+    class="container"
+    style="overflow-y: auto; overflow-x: hidden; height: 425px"
+  >
+    <form>
+      <div class="mx-auto" style="width: 200px;">
+        <h5 class="modal-title">{{vm.tituloTela}}</h5>
+      </div>
+      <div class="form-group">
+        <label for="nomePerfil">Nome:</label>
+        <input
+          type="nome"
+          class="form-control"
+          id="nomePerfil"
+          ng-model="vm.perfil.nome"
+          placeholder="Digite o nome do perfil ..."
+        />
+      </div>
+      <div class="form-group">
+        <label for="descricaoPerfil" style="width: 200px;">Descrição</label>
+        <textarea
+        type="text"
+          class="form-control"
+          id="descricaoPerfil"
+          ng-model="vm.perfil.descricao"
+          rows="3"
+          placeholder="Insira uma descrição ..."
+        ></textarea>
+      </div>
+      <div timclass="row" style="margin-left: 0px;">
+        <div class="form-group">
+          <label for="inclusaoPerfil">Data de Inclusão</label>
+          <input
+            type="text"
+            class="form-control"
+            id="inclusaoPerfil"
+            ng-model="vm.perfil.dataHoraInclusao"
+            ng-disabled="true"
+            ui-mask="99/99/9999"
+            style="width: 120px;"
+          />
+        </div>
+      </div>
+      <div class="row" style="margin-left: 0px;">
+        <div class="form-group">
+          <label for="alteracaoPerfil">Data de Alteração</label>
+          <input
+            type="text"
+            class="form-control"
+            id="alteracaoPerfil"
+            ng-model="vm.perfil.dataHoraAlteracao"
+            ng-disabled="true"
+            ui-mask="99/99/9999"
+            style="width: 120px;"
+          />
+        </div>
+      </div>
+</div>
+<div class="row" style="padding-top: 30px; padding-left: 714px;">
+  <button
+    type="button"
+    class="btn btn-primary btn-space"
+    ng-click="vm.incluir(vm.perfil)"
+  >Salvar
+  </button>
+  <button
+    type="button"
+    class="btn btn-danger"
+    ng-click="vm.cancelar(vm.perfil)"
+    style="margin-right: 0px;"
+  >Cancelar
+  </button>
+</div>
+</div>
+</form>
+</div>
+</div>

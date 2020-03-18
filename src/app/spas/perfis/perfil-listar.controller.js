@@ -10,10 +10,10 @@ function PerfilListarController($rootScope, $scope, $location,
     vm.ultimoIndex = 0;
     vm.contador = 0;
 
-    vm.url = "http://localhost:8080/treinamento/api/perfils/";
-
+    vm.urlPerfil = "http://localhost:8080/treinamento/api/perfils/";
+    
     vm.init = function () {
-        HackatonStefaniniService.listar(vm.url).then(
+        HackatonStefaniniService.listar(vm.urlPerfil).then(
             function (responsePerfis) {
                 if (responsePerfis.data !== undefined)
                     vm.listaPerfis = responsePerfis.data;
@@ -45,7 +45,7 @@ function PerfilListarController($rootScope, $scope, $location,
     };
 
     vm.avancarPaginanacao = function (index) {
-        
+
         vm.listaPerfisMostrar = [];
         vm.currentPage++;
 
@@ -62,7 +62,7 @@ function PerfilListarController($rootScope, $scope, $location,
     };
 
     vm.retrocederPaginanacao = function (index) {
-        
+
         vm.listaPerfisMostrar = [];
 
         vm.currentPage--;
@@ -79,17 +79,17 @@ function PerfilListarController($rootScope, $scope, $location,
 
     vm.editar = function (id) {
         if (id !== undefined)
-            $location.path("EditarPerfis/" + id);
-        else
-            $location.path("cadastrarPerfil");
+        $location.path("EditarPerfis/" + id);
+    else
+        $location.path("cadastrarPerfil");
     }
 
     vm.remover = function (id) {
-
-        var liberaExclusao = HackatonStefaniniService.excluir(vm.url + id).then(
+        HackatonStefaniniService.excluir(vm.urlPerfil + id).then(
             function (response) {
                 vm.init();
-            });
+            }
+        );
     }
 
     vm.retornarTelaListagem = function () {
