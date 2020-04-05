@@ -42,7 +42,7 @@ function MenuController($rootScope, $scope, $location,
                 break;
         }
 
-        vm.executaConsultaModelo();
+        // vm.executaConsultaModelo();
     };
 
     vm.executaConsultaModelo = function () {

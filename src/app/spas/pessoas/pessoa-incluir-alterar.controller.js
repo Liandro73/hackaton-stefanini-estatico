@@ -1,24 +1,12 @@
 angular.module("hackaton-stefanini").controller("PessoaIncluirAlterarController", PessoaIncluirAlterarController);
-PessoaIncluirAlterarController.$inject = [
-    "$rootScope",
-    "$scope",
-    "$location",
-    "$q",
-    "$filter",
-    "$routeParams",
-    "HackatonStefaniniService"];
+PessoaIncluirAlterarController.$inject = ["$rootScope", "$scope", "$location", "$q", "$filter", "$routeParams", "HackatonStefaniniService"];
 
-function PessoaIncluirAlterarController(
-    $rootScope,
-    $scope,
-    $location,
-    $q,
-    $filter,
-    $routeParams,
-    HackatonStefaniniService) {
+function PessoaIncluirAlterarController($rootScope, $scope, $location, $q, $filter, $routeParams, HackatonStefaniniService) {
 
     /**ATRIBUTOS DA TELA */
     vm = this;
+
+    vm.imagemAux = false;
 
     vm.pessoa = {
         id: null,
@@ -27,8 +15,10 @@ function PessoaIncluirAlterarController(
         dataNascimento: null,
         enderecos: [],
         perfils: [],
-        situacao: false
+        situacao: false,
+        caminhoImagem: null
     };
+
     vm.enderecoDefault = {
         id: null,
         idPessoa: null,
@@ -40,6 +30,8 @@ function PessoaIncluirAlterarController(
         complemento: ""
     };
 
+    vm.enderecoEncontradoPorCep = "";
+
     vm.urlEndereco = "http://localhost:8080/treinamento/api/enderecos/";
     vm.urlPerfil = "http://localhost:8080/treinamento/api/perfils/";
     vm.urlPessoa = "http://localhost:8080/treinamento/api/pessoas/";
@@ -49,7 +41,6 @@ function PessoaIncluirAlterarController(
 
         vm.tituloTela = "Cadastrar Pessoa";
         vm.acao = "Cadastrar";
-
 
         /**Recuperar a lista de perfil */
         vm.listar(vm.urlPerfil).then(
@@ -92,7 +83,6 @@ function PessoaIncluirAlterarController(
 
         if (vm.pessoa.enderecos.length === 0)
             vm.pessoa.enderecos.push(vm.enderecoModal);
-
         $("#modalEndereco").modal();
     };
 
@@ -102,10 +92,18 @@ function PessoaIncluirAlterarController(
     };
 
     vm.incluir = function () {
+
         vm.pessoa.dataNascimento = vm.formataDataJava(vm.pessoa.dataNascimento);
 
+        if(vm.imagemAux == true){
+            alert("imagem")
+            vm.pessoa.imagem = document.getElementById("imagemPessoa").getAttribute("src");
+        }
+
         var objetoDados = angular.copy(vm.pessoa);
+
         var listaEndereco = [];
+
         angular.forEach(objetoDados.enderecos, function (value, key) {
             if (value.complemento.length > 0) {
                 value.idPessoa = objetoDados.id;
@@ -113,25 +111,28 @@ function PessoaIncluirAlterarController(
             }
         });
 
+
         objetoDados.enderecos = listaEndereco;
-        if (vm.perfil !== null){
+        // objetoDados.perfils.push(vm.perfil);
+        // if (vm.perfil !== null) {
 
-            var isNovoPerfil = true;
-            
-            angular.forEach(objetoDados.perfils, function (value, key) {
-                if (value.id === vm.perfil.id) {
-                    isNovoPerfil = false;
-                }
-            });
-            if (isNovoPerfil)
-                objetoDados.perfils.push(vm.perfil);
-        }
+        //     var isNovoPerfil = true;
+
+        //     angular.forEach(objetoDados.perfils, function (value, key) {
+        //         if (value.id === vm.perfil.id) {
+        //             isNovoPerfil = false;
+        //         }
+        //     });
+        //     if (isNovoPerfil)
+        //     objetoDados.perfils.push(vm.perfil);
+        // }
+
         if (vm.acao == "Cadastrar") {
-
             vm.salvar(vm.urlPessoa, objetoDados).then(
                 function (pessoaRetorno) {
                     vm.retornarTelaListagem();
-                });
+                }
+            )
         } else if (vm.acao == "Editar") {
             vm.alterar(vm.urlPessoa, objetoDados).then(
                 function (pessoaRetorno) {
@@ -139,6 +140,20 @@ function PessoaIncluirAlterarController(
                 });
         }
     };
+
+    vm.buscarCep = function (cep) {
+        var url = vm.urlEndereco + 'buscar/' + cep;
+        HackatonStefaniniService.listarId(url)
+            .then(
+                function (retorno) {
+                    vm.enderecoEncontradoPorCep = retorno.data;
+                    vm.enderecoDefault.logradouro = retorno.data.logradouro;
+                    vm.enderecoDefault.bairro = retorno.data.bairro;
+                    vm.enderecoDefault.uf = retorno.data.uf;
+                    vm.enderecoDefault.localidade = retorno.data.localidade;
+                }
+            )
+    }
 
     vm.remover = function (objeto, tipo) {
 
@@ -180,8 +195,11 @@ function PessoaIncluirAlterarController(
         return deferred.promise;
     }
 
-    vm.salvar = function (url, objeto) {
+    vm.incluirPessoa = function (pessoa) {
 
+    }
+
+    vm.salvar = function (url, objeto) {
         var deferred = $q.defer();
         var obj = JSON.stringify(objeto);
         HackatonStefaniniService.incluir(url, obj).then(
@@ -226,7 +244,6 @@ function PessoaIncluirAlterarController(
         var dia = data.slice(0, 2);
         var mes = data.slice(2, 4);
         var ano = data.slice(4, 8);
-
         return ano + "-" + mes + "-" + dia;
     };
 
@@ -238,34 +255,22 @@ function PessoaIncluirAlterarController(
         return dia + mes + ano;
     };
 
-    vm.listaUF = [
-        { "id": "RO", "desc": "RO" },
-        { "id": "AC", "desc": "AC" },
-        { "id": "AM", "desc": "AM" },
-        { "id": "RR", "desc": "RR" },
-        { "id": "PA", "desc": "PA" },
-        { "id": "AP", "desc": "AP" },
-        { "id": "TO", "desc": "TO" },
-        { "id": "MA", "desc": "MA" },
-        { "id": "PI", "desc": "PI" },
-        { "id": "CE", "desc": "CE" },
-        { "id": "RN", "desc": "RN" },
-        { "id": "PB", "desc": "PB" },
-        { "id": "PE", "desc": "PE" },
-        { "id": "AL", "desc": "AL" },
-        { "id": "SE", "desc": "SE" },
-        { "id": "BA", "desc": "BA" },
-        { "id": "MG", "desc": "MG" },
-        { "id": "ES", "desc": "ES" },
-        { "id": "RJ", "desc": "RJ" },
-        { "id": "SP", "desc": "SP" },
-        { "id": "PR", "desc": "PR" },
-        { "id": "SC", "desc": "SC" },
-        { "id": "RS", "desc": "RS" },
-        { "id": "MS", "desc": "MS" },
-        { "id": "MT", "desc": "MT" },
-        { "id": "GO", "desc": "GO" },
-        { "id": "DF", "desc": "DF" }
-    ];
+    vm.visualizarImagem = function () {
+
+        var preview = document.querySelectorAll('img').item(0);
+        var file = document.querySelector('input[type=file').files[0];
+        var reader = new FileReader();
+
+        reader.onloadend = function () {
+            preview.src = reader.result;
+        };
+
+        if (file) {
+            vm.aux = true;
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = "";
+        }
+    }
 
 }
